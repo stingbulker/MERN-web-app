@@ -1,6 +1,9 @@
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 
+import { config } from "dotenv";
+config();
+
 import Deck from "./models/Deck";
 
 const PORT = 5000;
@@ -18,11 +21,7 @@ app.post("/decks", async (req: Request, res: Response) => {
   res.json(createDeck);
 });
 
-mongoose
-  .connect(
-    "mongodb+srv://flashcard:J1QQc79fmbrTWPfC@mern-web-app.5rlrwwy.mongodb.net/?retryWrites=true&w=majority&appName=MERN-web-app"
-  )
-  .then(() => {
-    console.log(`You had found ${PORT}`);
-    app.listen(PORT);
-  });
+mongoose.connect(process.env.MONGO_URL ?? "").then(() => {
+  console.log(`You had found ${PORT}`);
+  app.listen(PORT);
+});
