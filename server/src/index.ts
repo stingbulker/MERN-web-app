@@ -17,8 +17,12 @@ app.use(
 );
 app.use(express.json());
 
+app.get("/decks", async (req: Request, res: Response) => {
+  const decks = await Deck.find();
+  res.json(decks);
+});
+
 app.post("/decks", async (req: Request, res: Response) => {
-  console.log(req.body);
   const newDeck = new Deck({
     title: req.body.title,
   });
