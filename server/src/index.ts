@@ -1,10 +1,13 @@
 import { config } from "dotenv";
 config();
 
-import express, { Request, Response } from "express";
+import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import Deck from "./models/Deck";
+import { getDecksController } from "./controller/getDeckController";
+import { createDeckController } from "./controller/createDeckController";
+import { deleteDeckController } from "./controller/deleteDeckController";
+import { createCardForDeckController } from "./controller/createCardForDeckController";
 
 const PORT = 5000;
 
@@ -17,24 +20,10 @@ app.use(
 );
 app.use(express.json());
 
-app.get("/decks", async (req: Request, res: Response) => {
-  const decks = await Deck.find();
-  res.json(decks);
-});
-
-app.post("/decks", async (req: Request, res: Response) => {
-  const newDeck = new Deck({
-    title: req.body.title,
-  });
-  const createDeck = await newDeck.save();
-  res.json(createDeck);
-});
-
-app.delete("/decks/:deckId", async (req: Request, res: Response) => {
-  const deckId = req.params.deckId;
-  const deck = await Deck.findByIdAndDelete(deckId);
-  res.json(deck);
-});
+app.get("/decks", getDecksController);
+app.post("/decks", createDeckController);
+app.delete("/decks/:deckId", deleteDeckController);
+app.post("/decks;deckId/cards", createCardForDeckController);
 
 mongoose.connect(process.env.MONGO_URL ?? "").then(() => {
   console.log(`You had found ${PORT}`);
